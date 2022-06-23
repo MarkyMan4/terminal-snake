@@ -1,7 +1,5 @@
 import sys
-import termios
 import time
-import tty
 from pynput.keyboard import Key, Listener, Controller
 from board import Board
 from snake import Snake
