@@ -18,10 +18,13 @@ def on_release(key):
 def main():
     board = Board(BOARD_WIDTH, BOARD_HEIGHT, Snake(BOARD_WIDTH, BOARD_HEIGHT))
     board.update_board()
+    listeners = []
 
     while True:
-        l = Listener(on_press=on_press, on_release=on_release)
-        l.start()
+        listener = Listener(on_press=on_press, on_release=on_release)
+        listener.start()
+        listeners.append(listener)
+
         time.sleep(0.1)
 
         if key_pressed == Key.up:
@@ -36,5 +39,9 @@ def main():
             sys.exit()
 
         board.update_board()
+        
+        if len(listeners) > 1:
+            l = listeners.pop(0)
+            l.stop()
 
 if __name__ == '__main__': main()
