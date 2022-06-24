@@ -7,8 +7,9 @@ BOARD_TILE = '.'
 SNAKE_TILE = ' '
 PELLET_TILE = '0'
 
-class Board:
+class Game:
     def __init__(self, board_rows, board_cols, snake: Snake):
+        self.game_over = False
         self.board_rows = board_rows
         self.board_cols = board_cols
         self.board = [['.' for _ in range(board_rows)] for _ in range(board_cols)]
@@ -37,7 +38,11 @@ class Board:
             self.snake.grow()
 
     def update_board(self):
-        self.snake.update()
+        collided = self.snake.update()
+
+        if collided:
+            self.game_over = True
+            return
 
         self.check_pellet_eaten()
         
@@ -65,3 +70,8 @@ class Board:
             print()
 
         print('\033[2K', end='') # clear the line
+
+    def show_game_over(self):
+        print('\033[2J', end='')
+        print(f'\033[1;1f', end='')
+        print('\033[31mGAME OVER\033[0m')

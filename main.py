@@ -1,7 +1,7 @@
 import sys
 import time
 from pynput.keyboard import Key, Listener, Controller
-from board import Board
+from game import Game
 from snake import Snake
 
 BOARD_WIDTH = 30
@@ -16,11 +16,11 @@ def on_release(key):
     return False
 
 def main():
-    board = Board(BOARD_WIDTH, BOARD_HEIGHT, Snake(BOARD_WIDTH, BOARD_HEIGHT))
-    board.update_board()
+    game = Game(BOARD_WIDTH, BOARD_HEIGHT, Snake(BOARD_WIDTH, BOARD_HEIGHT))
+    game.update_board()
     listeners = []
 
-    while True:
+    while not game.game_over:
         listener = Listener(on_press=on_press, on_release=on_release)
         listener.start()
         listeners.append(listener)
@@ -28,20 +28,22 @@ def main():
         time.sleep(0.1)
 
         if key_pressed == Key.up:
-            board.snake.turn_up()
+            game.snake.turn_up()
         elif key_pressed == Key.left:
-            board.snake.turn_left()
+            game.snake.turn_left()
         elif key_pressed == Key.down:
-            board.snake.turn_down()
+            game.snake.turn_down()
         elif key_pressed == Key.right:
-            board.snake.turn_right()
+            game.snake.turn_right()
         elif key_pressed == Key.esc:
             sys.exit()
 
-        board.update_board()
+        game.update_board()
         
         if len(listeners) > 1:
             l = listeners.pop(0)
             l.stop()
+
+    game.show_game_over()
 
 if __name__ == '__main__': main()
