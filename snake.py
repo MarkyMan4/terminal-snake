@@ -38,6 +38,7 @@ class Snake:
         """
         self.prev_tail_pos = Coord(self.body[0].x, self.body[0].y)
         collided = False
+        head = self.body[-1]
 
         # update the body - not including the head
         for i in range(len(self.body) - 1):
@@ -46,30 +47,49 @@ class Snake:
         
         # then move the head based on direction of movement
         if self.direction == Directions.UP:
-            self.body[-1].y -= 1
+            head.y -= 1
         elif self.direction == Directions.DOWN:
-            self.body[-1].y += 1
+            head.y += 1
         elif self.direction == Directions.LEFT:
-            self.body[-1].x -= 1
+            head.x -= 1
         elif self.direction == Directions.RIGHT:
-            self.body[-1].x += 1
+            head.x += 1
 
-        if self.body[-1].x < 0 or self.body[-1].y < 0 or self.body[-1].x >= self.board_width or self.body[-1].y >= self.board_height:
+        def collided_with_self():
+            for i in range(len(self.body) - 1):
+                if head.__eq__(self.body[i]):
+                    return True
+
+            return False
+
+        if (
+            head.x < 0 
+            or head.y < 0 
+            or head.x >= self.board_width 
+            or head.y >= self.board_height
+            or collided_with_self()
+        ):
             collided = True
+        
 
         return collided
 
+    # never allow snake to turn in opposite direction
     def turn_up(self):
-        self.direction = Directions.UP
+        if self.direction != Directions.DOWN:
+            self.direction = Directions.UP
 
     def turn_down(self):
-        self.direction = Directions.DOWN
+        if self.direction != Directions.UP:
+            self.direction = Directions.DOWN
         
     def turn_left(self):
-        self.direction = Directions.LEFT
+        if self.direction != Directions.RIGHT:
+            self.direction = Directions.LEFT
 
     def turn_right(self):
-        self.direction = Directions.RIGHT
+        if self.direction != Directions.LEFT:
+            self.direction = Directions.RIGHT
 
     def grow(self):
         # Makes the snake bigger by one tile. Call this method when the snake eats a pellet        

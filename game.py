@@ -14,11 +14,27 @@ class Game:
         self.board_cols = board_cols
         self.board = [['.' for _ in range(board_rows)] for _ in range(board_cols)]
         self.snake = snake
-        self.pellet = Coord(int(random() * board_rows), int(random() * board_cols))
 
+        self.spawn_pellet()
         self.draw_snake()
 
         os.system('clear')
+
+    def spawn_pellet(self):
+        pellet_coord = Coord(int(random() * self.board_rows), int(random() * self.board_cols))
+
+        # checks if a coordinate overlaps with snake body
+        def coord_on_snake(coord: Coord):
+            for b in self.snake.body:
+                if coord.__eq__(b):
+                    return True
+
+            return False
+
+        while coord_on_snake(pellet_coord):
+            pellet_coord = Coord(int(random() * self.board_rows), int(random() * self.board_cols))
+
+        self.pellet = pellet_coord
 
     def draw_snake(self):
         """
@@ -34,7 +50,7 @@ class Game:
         If the head of the snake is on the pellet, make the snake bigger and respawn the pellet
         """
         if self.snake.body[-1].x == self.pellet.x and self.snake.body[-1].y == self.pellet.y:
-            self.pellet = Coord(int(random() * self.board_rows), int(random() * self.board_cols))
+            self.spawn_pellet()
             self.snake.grow()
 
     def update_board(self):
