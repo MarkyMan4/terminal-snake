@@ -16,7 +16,7 @@ def on_release(key):
     return False
 
 def main():
-    game = Game(BOARD_WIDTH, BOARD_HEIGHT, Snake(BOARD_WIDTH, BOARD_HEIGHT))
+    game = Game(BOARD_WIDTH, BOARD_HEIGHT)
     game.update_board()
     listeners = []
 

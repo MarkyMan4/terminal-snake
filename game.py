@@ -8,12 +8,12 @@ SNAKE_TILE = ' '
 PELLET_TILE = '0'
 
 class Game:
-    def __init__(self, board_rows, board_cols, snake: Snake):
+    def __init__(self, board_width, board_height):
         self.game_over = False
-        self.board_rows = board_rows
-        self.board_cols = board_cols
-        self.board = [['.' for _ in range(board_rows)] for _ in range(board_cols)]
-        self.snake = snake
+        self.board_width = board_width
+        self.board_height = board_height
+        self.board = [['.' for _ in range(board_width)] for _ in range(board_height)]
+        self.snake = Snake(board_width, board_height)
 
         self.spawn_pellet()
         self.draw_snake()
@@ -21,7 +21,7 @@ class Game:
         os.system('clear')
 
     def spawn_pellet(self):
-        pellet_coord = Coord(int(random() * self.board_rows), int(random() * self.board_cols))
+        pellet_coord = Coord(int(random() * self.board_width), int(random() * self.board_height))
 
         # checks if a coordinate overlaps with snake body
         def coord_on_snake(coord: Coord):
@@ -32,7 +32,7 @@ class Game:
             return False
 
         while coord_on_snake(pellet_coord):
-            pellet_coord = Coord(int(random() * self.board_rows), int(random() * self.board_cols))
+            pellet_coord = Coord(int(random() * self.board_width), int(random() * self.board_height))
 
         self.pellet = pellet_coord
 
@@ -40,7 +40,7 @@ class Game:
         """
         Reset the board and draw the snake on it again
         """
-        self.board = [['.' for _ in range(self.board_rows)] for _ in range(self.board_cols)]
+        self.board = [['.' for _ in range(self.board_width)] for _ in range(self.board_height)]
 
         for coord in self.snake.body:
             self.board[coord.y][coord.x] = SNAKE_TILE
@@ -63,7 +63,7 @@ class Game:
         self.check_pellet_eaten()
         
         # draw the snake and pellet on the board
-        self.board = [['.' for _ in range(self.board_rows)] for _ in range(self.board_cols)]
+        self.board = [['.' for _ in range(self.board_width)] for _ in range(self.board_height)]
 
         self.board[self.pellet.y][self.pellet.x] = PELLET_TILE
 
@@ -88,6 +88,13 @@ class Game:
         print('\033[2K', end='') # clear the line
 
     def show_game_over(self):
+        def print_blank_lines():
+            for _ in range(int(self.board_height / 2)):
+                print()
+
+        print_blank_lines()
         print('\033[2J', end='')
         print(f'\033[1;1f', end='')
+        print_blank_lines()
         print('\033[31mGAME OVER\033[0m')
+        print_blank_lines()
